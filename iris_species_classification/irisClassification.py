@@ -15,19 +15,21 @@ keys = iris_data.keys()
 print ("keys of iris_dataset : {}".format(keys))
 print ("Possible classes of iris : {}".format(iris_data['target_names']))
 
-
+#split dataset into two parts : training datas and test datas
 X_train,X_test,y_train,y_test = train_test_split (iris_data['data'],iris_data['target'],random_state =0)
 iris_dataframe = pd.DataFrame (X_train,columns = iris_data['feature_names'])
-#print (iris_dataframe)
-#pd.plotting.scatter_matrix(iris_dataframe,c=y_train,figsize=(15,15),marker='o',hist_kwds={'bins':20},s=60,alpha=.8,cmap=mglearn.cm3)
-#plt.show()
+
+#display and plot to verify
+pd.plotting.scatter_matrix(iris_dataframe,c=y_train,figsize=(15,15),marker='o',hist_kwds={'bins':20},s=60,alpha=.8,cmap=mglearn.cm3)
+plt.show()
+
+#Classification with K Nearest Neighbors (kNN)
 knn = KNeighborsClassifier (n_neighbors=1)
 knn.fit(X_train,y_train)
 
+#predict with new value
 X_new = np.array([[5,2.9,1,0.2]])
-print (X_new.shape)
 prediction = knn.predict(X_new)
-
 print ("Predicted class is : {}".format(iris_data['target_names'][prediction]))
 print ("Test score : {}".format(knn.score(X_test,y_test)))
 
