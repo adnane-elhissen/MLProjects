@@ -1,3 +1,3 @@
-# hello-world
-First Repository
-I'm here to share projects !! 
+# Machine learning projects
+The purpose of activities is sharing machine learning projects based on custom mathematical tools and other librairies as Sickit-learn.
+     
