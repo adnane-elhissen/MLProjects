@@ -1,7 +1,7 @@
 #! /usr/sys/env python 3
 
 from collections import Counter
-import vector as vect
+from . import vector as vect
 import math
 
 

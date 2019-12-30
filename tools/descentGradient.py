@@ -4,7 +4,7 @@
 import math
 import matplotlib.pyplot as plt
 from functools import partial
-from vector import *
+from . import vector as vect
 import random
 
 
@@ -59,7 +59,7 @@ while True:
 	
 	gradient = sum_of_squares_gradient(v)
 	next_v = step(v,gradient,-0.001)
-	if distance(next_v,v) < tolerance:
+	if vect.distance(next_v,v) < tolerance:
 		break
 	v = next_v
 
@@ -122,7 +122,7 @@ def minimize_stochastic(target_fn,gradient_fn,x,y,theta_0,alpha_0=0.01):
 			alpha *= 0.9
 			for x_i,y_i in in_random_order(data):
 				gradient_i = gradient_fn(x_i,y_i,theta)
-				theta = vector_substract (theta,scalar_multiply(alpha,gradient_i))
+				theta = vect.vector_substract (theta,vect.scalar_multiply(alpha,gradient_i))
 	return min_theta
 
 def maximize_stochastic(target_fn,gradient_fn,x,y,theta_0,alpha_0=0.01):
