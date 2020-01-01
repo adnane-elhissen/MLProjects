@@ -1,4 +1,4 @@
-#! /usr/bin/env python2
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import math
@@ -18,18 +18,13 @@ def split_data(data,num_train):
 		i+=1
 	return results
 
-def train_test_split (x,y,z,num_train):
-	data = zip(x,y,z)
-	train,test = split_data(data,num_train)
-	x_train,y_train,z_train = zip(*train)
-	x_test,y_test,z_test = zip(*test)
-	return x_train,x_test,y_train,y_test,z_train,z_test
-
+#Convert words from Upper case to Lower Case
 def tokenize(message):
 	message = message.lower()
 	all_words = re.findall("[a-z0-9']+",message)
 	return set(all_words)
 
+# Recover data set and return Dictionary of words and their occurance in spam and no spam messages 
 def count_words(training_set):
 	counts = defaultdict(lambda:[0,0])
 	for message,is_spam in training_set:
@@ -37,10 +32,18 @@ def count_words(training_set):
 			counts[word][0 if is_spam else 1] +=1
 	return counts
 
+#Calculate probability of each words in dictionary returned by count_words function
 def word_probabilities(counts,total_spams,total_non_spams,k):
 	return [(w,(spam+k)/(total_spams +2*k),(non_spam+k)/(total_non_spams +2*k))
 		for w,(spam,non_spam) in counts.items()]
 
+
+
+# P(Xi | S) = (k + number of spam messages containing wi) / (2k + number of spam messages)
+# wi ∈ Xi and Xi is set of words , k random compteur to avoid a zero value of probability P(wi | S) = 0     
+
+
+#Define probability of message to be spam or not based on probability of each word in dictionary
 def spam_probability(word_probs,message):
 	message_words = tokenize(message)
 	log_prob_if_spam = log_prob_if_not_spam = 0.0
@@ -71,25 +74,32 @@ class NaiveBayesClassifier:
 
 
 if __name__=="__main__":
-	path = r"/home/adnane/Bureau/projet_data/spam/*/*"
+    # data sets of spam 
+    # "ham" means that we use a no spam message
+	path = r"data_sets/spam/*/*"
+    # We store labeled data 
 	data = []
 	for fn in glob.glob(path):
 		is_spam ="ham" not in fn 
 		with open(fn,encoding="utf8", errors='ignore') as fl:
 			for line in fl :
-				#print (line)
 				if line.startswith("Subject:"):
 					subject = re.sub(r"^Subject: ","",line).strip()
 					data.append((subject,is_spam))
 			
 			
 	random.seed(0)
+    #Split data into training and test
 	train_data,test_data =split_data(data,0.75)
+    
+    #Traning models based on NaiveBayesClassifier
 	classifier = NaiveBayesClassifier()
 	classifier.train(train_data)
 	classified = [(subject,is_spam,classifier.classify(subject)) for subject,is_spam in test_data]
+    
+    #We suppose that spam_probability > 0.5 corresponds to spam message 
 	counts = Counter((is_spam,spam_probability>0.5) for _,is_spam,spam_probability in classified)
-	print(classifier.word_probs)
+
 
 
 
