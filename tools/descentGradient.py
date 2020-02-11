@@ -4,7 +4,7 @@
 import math
 import matplotlib.pyplot as plt
 from functools import partial
-from . import vector as vect
+from tools import vector as vect
 import random
 
 
@@ -72,7 +72,7 @@ def safe(f):
 			return float('inf')
 	return safe_f
 
-def minimize_batch(target_fn,gradient_fn,theta_0,tolerance=0.000001):
+def minimize_batch(target_fn,gradient_fn,theta_0,tolerance=0.01):
 	step_sizes = [100,10,1,0.1,0.01,0.001,0.0001,0.00001]
 	theta = theta_0
 	target_fn = safe(target_fn)
@@ -93,7 +93,7 @@ def negate(f):
 def negate_all(f):
 	return lambda *args, **kwargs:[-y for y in f(*args,**kwargs)]
 
-def maximize_batch(target_fn,gradient_fn,theta_0,tolerance=0.000001):
+def maximize_batch(target_fn,gradient_fn,theta_0,tolerance=0.0001):
 	return minimize_batch(negate(target_fn),negate_all(gradient_fn),theta_0,tolerance)
 
 

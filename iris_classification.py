@@ -108,5 +108,5 @@ def process_classification_by_custom_class():
 
 
 if __name__=="__main__":
-	#process_classification_by_custom_class()
-    process_classification_by_sickit_learn()
+	process_classification_by_custom_class()
+    #process_classification_by_sickit_learn()

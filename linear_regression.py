@@ -13,6 +13,8 @@ from tools import descentGradient as dg
 from tools import vector as vect
 from tools import probabilities as pb
 
+import numpy as np
+
 """
 
 # Basing on simple linear regression as : Yi = beta*Xi + alpha 
@@ -84,20 +86,43 @@ class CustomLinearRegression :
     def squared_error_gradient(self,x_i,y_i,beta):
         return [- 2 * x_ij * self.error(x_i,y_i,beta) for x_ij in x_i]
 
+    def coef_linear (self,x,y):
+        n = np.size(x)
+        beta = np.empty((n))
+        print (n)
+        
+        y_ = y
+        X = x
 
+
+        #print (X.T)
+        
+        X_ = X.T
+        
+        x_x_transpose_inv = np.linalg.inv((X_).dot(X))
+        beta = (x_x_transpose_inv).dot(X_).dot(y_)
+        #beta = (x_x_transpose_inv).dot(x_transpose_y)
+        l = []
+        for i in range(beta.shape[0]):
+            l.append(beta[i])
+        return l
+        
     def estimate_beta(self,x,y):
-        beta_0 = [random.random() for x_i in x[0]]
-        return dg.minimize_stochastic(self.squared_error,self.squared_error_gradient,x,y,beta_0,0.0001)
+        #beta_0 = [random.random() for x_i in x[0]]
+        #return dg.minimize_stochastic(self.squared_error,self.squared_error_gradient,x,y,beta_0,0.0001)
+        return self.coef_linear(x,y)
     
-    def estimate_sample_beta(self,sample):
-        x_sample,y_sample = zip(*sample)
-        return self.estimate_beta(x_sample,y_sample)
+    def estimate_sample_beta(self,x,y):
+        #x_sample,y_sample = zip(*sample)
+        return self.estimate_beta(x,y)
 
     def multiple_r_squared(self,x,y,beta):
-        sum_of_squared_error = sum (self.squared_error(x_i,y_i,beta) for x_i,y_i in zip(x,y))
+        y_ = ct.mean(y)
+        sum_of_squared_error = sum (  ( (self.error(x_i,y_i,beta)) - y_)**2 for x_i,y_i in zip(x,y))
         return 1.0 - (sum_of_squared_error / self.total_sum_of_squares(y))
 
-
+    def fit(self,x,y):
+        return self.estimate_sample_beta(x,y)
 
 
 
